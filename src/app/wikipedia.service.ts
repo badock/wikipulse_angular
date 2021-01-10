@@ -15,8 +15,7 @@ export class WikipediaService {
   }
 
   getStatisticsKeywords(matchingKeywords: string): Observable<any> {
-    //const url = `https://en.wikipedia.org/w/rest.php/v1/pageviews/per-article/en.wikipedia/all-access/user/${matchingKeywords}/daily/2016122700/2020122600`;
-    const url = `https://api.spiral.jonathanpastor.fr/pages/views/${matchingKeywords}/2016122700/2020122600`;
+    const url = `https://api.spiral.jonathanpastor.fr/pages/views/${matchingKeywords}/2016122700/2021010800`;
     return this.http.get(url);
   }
 

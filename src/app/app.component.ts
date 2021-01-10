@@ -65,44 +65,38 @@ export class AppComponent implements OnInit {
   }
 
   refreshHeatMap(): void {
-    // console.log(this.statisticsData);
     const graphSvg = d3.select('g#graph_svg');
     graphSvg.selectAll('*').remove();
 
-    // const minViews = Math.min(...this.statisticsData['items'].map((item) => item.views));
-    // const maxViews = Math.max(...this.statisticsData['items'].map((item) => item.views));
-    // const legendMin = minViews;
-    // const legendMax = maxViews;
+    for (let item of this.statisticsData['items']) {
+      item["date"] = moment(item.timestamp, 'YYYYMMDDHH');
+    }
+
+    let maxYear = Math.max(...this.statisticsData['items'].map((i) => i.date.year()));
+    let minYear = Math.min(...this.statisticsData['items'].map((i) => i.date.year()));
 
     const sortedViews = this.statisticsData['items'].map((item) => item.views).sort((a,b) => a-b);
     const legendMin = sortedViews[Math.round(0.05 * sortedViews.length)];
     const legendMax = sortedViews[Math.round(0.95 * sortedViews.length)];
 
     const weekAngle = 2 * Math.PI / 52;
-    const yearCount = (2020 - 2016) + 1;
+    const yearCount = (maxYear - minYear) + 1;
     const yearRadius = (this.height - 40) / (2 * yearCount + 1) / 1.1;
 
     let maxRatioView = 0.0;
 
-    // const colorPicker = d3.scaleLinear()
-    //   .domain([0, 0.5, 1])
-    //   .range(["yellow", "orange", "red"]);
-
-    // const colorPicker = d3.scaleLinear()
-    //   .domain([-1, 0, 1])
-    //   .range(["orange", "white", "green"]);
     const colorPicker = d3.interpolateHslLong("#DDDDDD", "red");
 
+    const spiralCenterX = this.width / 2;
+    const spiralCenterY = this.height / 2;
+
     this.statisticsData['items'].map((item) => {
-      const date = moment(item.timestamp, 'YYYYMMDDHH');
+      const date = item.date;
 
       const minAngle = date.week() * weekAngle - Math.PI / 2 - weekAngle;
       const maxAngle = minAngle + weekAngle;
 
-      const spiralCenterX = this.width / 2;
-      const spiralCenterY = this.height / 2;
-
-      let minRadius = (date.year() - 2016) * (yearRadius * 1.1) + date.week() * (yearRadius * 1.1 / 52) + date.weekday() * yearRadius / 7;
+      let minRadius = (date.year() - minYear) * (yearRadius * 1.1) + date.week() * (yearRadius * 1.1 / 52) + date.weekday() * yearRadius / 7;
 
       if (date.week() === 1 && date.month() === 11) {
         minRadius += yearRadius * 1.1;
@@ -124,10 +118,7 @@ export class AppComponent implements OnInit {
         ratioViews = 1.0;
       }
 
-
-      // const itemColor = d3.interpolateRgb('blue', 'red')(ratioViews);
       const itemColor = colorPicker(ratioViews);
-      // const itemColor = d3.interpolateViridis(ratioViews);
 
       if (maxRatioView < ratioViews) {
         maxRatioView = ratioViews;
@@ -139,6 +130,17 @@ export class AppComponent implements OnInit {
         .style('fill', itemColor)
         .style('stroke', itemColor);
     });
+
+    // Add year labels
+    for (let year = minYear + 1; year <= maxYear; year++) {
+      const radius = (year - minYear) * (yearRadius * 1.1);
+      graphSvg.append('text')
+        .attr('x', spiralCenterX)
+        .attr('y', spiralCenterY - radius - yearRadius / 3)
+        .style('fill', 'white')
+        .style('font-size', '0.7em')
+        .text(`${year}`);
+    }
   }
 
 }

@@ -6,6 +6,7 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+
 @app.route('/pages/views/<keywords>/<start>/<end>')
 @cross_origin()
 def fetch_wikipedia_pageviews_metric(keywords, start, end):
