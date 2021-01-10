@@ -120,5 +120,8 @@
       }
     }
   },
-  "defaultProject": "wiki-pulse-angular"
+  "defaultProject": "wiki-pulse-angular",
+  "cli": {
+    "analytics": "1e1597a8-59d9-49f9-ad92-0410ad00aafb"
+  }
 }
