@@ -43,25 +43,31 @@ export class AppComponent implements OnInit {
   }
 
   inputTextChange(): void {
-    this.wikipediaService.findMatchingArticles(this.inputText).subscribe(value => {
-      const firstMatch: string = value[1][0];
-
-      if (firstMatch === '' || firstMatch === undefined) {
+    const currentInputText = `${this.inputText}`;
+    setTimeout(() => {
+      if (currentInputText !== this.inputText) {
         return;
       }
+      this.wikipediaService.findMatchingArticles(this.inputText).subscribe(value => {
+        const firstMatch: string = value[1][0];
 
-      this.wikipediaService.getSummary(firstMatch).subscribe(summaryValue => {
-        console.log(summaryValue);
-        this.articleName = summaryValue.title;
-        this.summary = summaryValue.extract;
-        this.wikipediaUrl = summaryValue.content_urls.desktop.page;
-      });
+        if (firstMatch === '' || firstMatch === undefined) {
+          return;
+        }
 
-      this.wikipediaService.getStatisticsKeywords(firstMatch).subscribe(statisticsValue => {
-        this.statisticsData = statisticsValue;
-        this.refreshHeatMap();
+        this.wikipediaService.getSummary(firstMatch).subscribe(summaryValue => {
+          console.log(summaryValue);
+          this.articleName = summaryValue.title;
+          this.summary = summaryValue.extract;
+          this.wikipediaUrl = summaryValue.content_urls.desktop.page;
+        });
+
+        this.wikipediaService.getStatisticsKeywords(firstMatch).subscribe(statisticsValue => {
+          this.statisticsData = statisticsValue;
+          this.refreshHeatMap();
+        });
       });
-    });
+    }, 500);
   }
 
   refreshHeatMap(): void {
