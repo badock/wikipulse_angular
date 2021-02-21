@@ -22,6 +22,9 @@
           <div class="col-12 col-lg-6 col-xl-5" style="text-align: center;">
             <div>
               <h1>{{ articleName }}</h1>
+              <div class="spinner-border" role="status" *ngIf="isLoading">
+                <span class="visually-hidden">Loading...</span>
+              </div>
             </div>
             <figure id="bar"></figure>
           </div>

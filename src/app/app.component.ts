@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   rankingByViews = '';
   summary = '';
   wikipediaUrl = '';
+  isLoading = false;
 
   svg;
   height = 400;
@@ -44,6 +45,7 @@ export class AppComponent implements OnInit {
 
   inputTextChange(): void {
     const currentInputText = `${this.inputText}`;
+    this.isLoading = true;
     setTimeout(() => {
       if (currentInputText !== this.inputText) {
         return;
@@ -64,6 +66,7 @@ export class AppComponent implements OnInit {
 
         this.wikipediaService.getStatisticsKeywords(firstMatch).subscribe(statisticsValue => {
           this.statisticsData = statisticsValue;
+          this.isLoading = false;
           this.refreshHeatMap();
         });
       });
