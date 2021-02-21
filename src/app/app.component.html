@@ -1,4 +1,23 @@
 <div class="container-fluid">
+
+  <div class="row mt-3">
+    <div class="col-2">
+    </div>
+    <div class="col-8">
+      <div class="">
+        <span class="h1">Wikipulse-angular</span>
+        <span style="margin-left: 10px;" class="spinner-border" role="status" *ngIf="isLoading">
+          <span class="visually-hidden"></span>
+        </span>
+      </div>
+      <div class="" style="margin-top: 5px;">
+        <p>It enables to visualise popularity of search terms on wikipedia (France). Type something in the text input below to visualise temporal frequencies of search terms on wikipedia. It is a reimplementation of <a href="wikipulse.com">wikipulse.com</a> using angular.</p>
+      </div>
+    </div>
+    <div class="col-2">
+    </div>
+  </div>
+
   <div class="row mt-3">
     <div class="col-2">
     </div>
@@ -13,7 +32,7 @@
   </div>
 
 
-  <div class="row">
+  <div class="row" style="color: white;">
     <div class="col-2">
     </div>
     <div class="col-8">
@@ -21,15 +40,14 @@
         <div class="row">
           <div class="col-12 col-lg-6 col-xl-5" style="text-align: center;">
             <div>
-              <h1>{{ articleName }}</h1>
-              <div class="spinner-border" role="status" *ngIf="isLoading">
-                <span class="visually-hidden">Loading...</span>
-              </div>
+              <h1>
+                {{ articleName }}
+              </h1>
             </div>
             <figure id="bar"></figure>
           </div>
           <div class="col-12 col-lg-6 col-xl-7 p-5">
-            <p class="text-muted">
+            <p style="color: aliceblue;">
               {{ summary }}
             </p>
             <a href="{{ wikipediaUrl }}">{{ wikipediaUrl }}</a>

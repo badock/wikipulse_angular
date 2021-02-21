@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   width = 400;
   margin = 10;
   statisticsData = {};
+  lastSearchKeywords = '';
 
   constructor(private wikipediaService: WikipediaService) {
   }
@@ -45,6 +46,11 @@ export class AppComponent implements OnInit {
 
   inputTextChange(): void {
     const currentInputText = `${this.inputText}`;
+
+    if (this.lastSearchKeywords === currentInputText) {
+      return;
+    }
+
     this.isLoading = true;
     setTimeout(() => {
       if (currentInputText !== this.inputText) {
@@ -59,6 +65,7 @@ export class AppComponent implements OnInit {
 
         this.wikipediaService.getSummary(firstMatch).subscribe(summaryValue => {
           console.log(summaryValue);
+          this.lastSearchKeywords = currentInputText;
           this.articleName = summaryValue.title;
           this.summary = summaryValue.extract;
           this.wikipediaUrl = summaryValue.content_urls.desktop.page;
