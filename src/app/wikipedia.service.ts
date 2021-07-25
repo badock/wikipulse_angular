@@ -15,7 +15,12 @@ export class WikipediaService {
   }
 
   getStatisticsKeywords(matchingKeywords: string): Observable<any> {
-    const url = `https://api.spiral.jonathanpastor.fr/pages/views/${matchingKeywords}/2016122700/2021010800`;
+    let dateObj = new Date();
+    let yearStr = `${dateObj.getUTCFullYear()}`;
+    let monthStr = (dateObj.getUTCMonth() + 1) < 10 ? `0${dateObj.getUTCMonth() + 1}`: `${dateObj.getUTCMonth() + 1}`
+    let dayStr = dateObj.getUTCDate() < 10 ? `0${dateObj.getUTCDate()}`: `${dateObj.getUTCDate()}`
+    let todayAsStr = `${yearStr}${monthStr}${dayStr}00`;  
+    const url = `https://api.spiral.jonathanpastor.fr/pages/views/${matchingKeywords}/2016122700/${todayAsStr}`;
     return this.http.get(url);
   }
 
