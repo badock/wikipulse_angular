@@ -12,3 +12,9 @@ jobs:
       - run: npm install -g @angular/cli
       - run: npm install .
       - run: ng build
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          BRANCH: gh-pages
+          FOLDER: dist/wiki-pulse-angular
