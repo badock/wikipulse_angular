@@ -13,7 +13,7 @@ build:angular_frontend:
     - ng build --prod
   artifacts:
     paths:
-      - /builds/homelab-group/wikipulse_angular/src/dist
+      - /builds/homelab-group/wikipulse_angular/dist
     expire_in: 1 days
 
 deploy:python_api:
@@ -32,7 +32,7 @@ pages:
   - apt install -y rsync
 
   - mkdir -p public
-  - rsync -avz --progress /builds/homelab-group/wikipulse_angular/src/dist/ public/
+  - rsync -avz --progress /builds/homelab-group/wikipulse_angular/dist/ public/
   - ls -lha public/
 
   environment:
