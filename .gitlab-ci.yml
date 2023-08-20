@@ -32,7 +32,7 @@ pages:
   - apt install -y rsync
 
   - mkdir -p public
-  - rsync -avz --progress /builds/homelab-group/wikipulse_angular/dist/ public/
+  - rsync -avz --progress /builds/homelab-group/wikipulse_angular/dist/wiki-pulse-angular/ public/
   - ls -lha public/
 
   environment:
