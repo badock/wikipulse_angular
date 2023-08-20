@@ -9,8 +9,8 @@ build:angular_frontend:
     - apt update
     - apt install -y nodejs npm
     - npm install -g @angular/cli@11
+    - npm install -g .
     - cd src
-    - npm install .
     - ng build --prod
   artifacts:
     paths:
