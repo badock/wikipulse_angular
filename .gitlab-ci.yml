@@ -9,9 +9,7 @@ build:angular_frontend:
     - apt update
     - apt install -y nodejs npm
     - npm install -g @angular/cli@11
-    - npm install -g .
-    - cd src
-    - sleep 3600
+    - npm install .
     - ng build --prod
   artifacts:
     paths:
@@ -40,7 +38,7 @@ pages:
   environment:
     name: docs
     # Ask gitlab pages to deploy the public folder in specific URL that contains the branch name
-    url: https://badock.gitlab.io/homelab-group/golisp
+    url: https://badock.gitlab.io/homelab-group/wikipulse_angular
   artifacts:
     paths:
     - public
