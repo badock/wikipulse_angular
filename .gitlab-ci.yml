@@ -11,6 +11,7 @@ build:angular_frontend:
     - npm install -g @angular/cli@11
     - npm install -g .
     - cd src
+    - sleep 3600
     - ng build --prod
   artifacts:
     paths:
