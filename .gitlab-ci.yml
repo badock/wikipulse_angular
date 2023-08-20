@@ -1,0 +1,46 @@
+stages:
+  - build
+  - deploy
+  - pages
+
+build:angular_frontend:
+  stage: build
+  script:
+    - apt update
+    - apt install -y nodejs npm
+    - npm install -g @angular/cli@11
+    - cd src
+    - npm install .
+    - ng build --prod
+  artifacts:
+    paths:
+      - /builds/homelab-group/wikipulse_angular/src/dist
+    expire_in: 1 days
+
+deploy:python_api:
+  stage: deploy
+  script:
+    - apt update
+    - apt install -y rsync
+    - ssh s2.jonathanpastor.fr 'supervisorctl stop api'
+    - rsync -avz /builds/homelab-group/wikipulse_angular/ s2.jonathanpastor.fr:/root/wikipulse_angular/
+    - ssh s2.jonathanpastor.fr 'supervisorctl start api'
+
+pages:
+  stage: deploy
+  script:
+  - apt update
+  - apt install -y rsync
+
+  - mkdir -p public
+  - rsync -avz --progress /builds/homelab-group/wikipulse_angular/src/dist/ public/
+  - ls -lha public/
+
+  environment:
+    name: docs
+    # Ask gitlab pages to deploy the public folder in specific URL that contains the branch name
+    url: https://badock.gitlab.io/homelab-group/golisp
+  artifacts:
+    paths:
+    - public
+    expire_in: 1 week
