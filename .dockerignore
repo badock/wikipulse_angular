@@ -1,0 +1,9 @@
+*
+!package.json
+!package-lock.json
+!angular.json
+!tsconfig.json
+!tsconfig.app.json
+!.browserslistrc
+!src/
+!docker/

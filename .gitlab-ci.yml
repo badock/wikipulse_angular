@@ -1,45 +1,41 @@
+# Build the image, push it to the GitLab registry, then create/update the Portainer stack.
+#
+# Required CI/CD variables (Settings > CI/CD > Variables, masked + protected):
+#   PORTAINER_URL        e.g. https://51.178.27.27:9443
+#   PORTAINER_TOKEN      Portainer access token
+#   PORTAINER_ENDPOINT_ID  (optional, default 3)
+
 stages:
   - build
   - deploy
-  - pages
 
-build:angular_frontend:
+build:
   stage: build
+  image: docker:28
+  services:
+    - docker:28-dind
+  variables:
+    # Talk to the dind service over plain TCP (no TLS certs to share between containers).
+    # The runner must run with `privileged = true` for dind to start.
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   script:
-    - apt update
-    - apt install -y nodejs npm
-    - npm install -g @angular/cli@11
-    - npm install .
-    - ng build --prod
-  artifacts:
-    paths:
-      - /builds/homelab-group/wikipulse_angular/dist
-    expire_in: 1 days
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" -t "$CI_REGISTRY_IMAGE:latest" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE:latest"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-deploy:python_api:
+deploy:
   stage: deploy
+  image: alpine:3.22
+  before_script:
+    - apk add --no-cache curl jq
   script:
-    - apt update
-    - apt install -y rsync
-    - ssh s2.jonathanpastor.fr 'supervisorctl stop api'
-    - rsync -avz /builds/homelab-group/wikipulse_angular/ s2.jonathanpastor.fr:/root/wikipulse_angular/
-    - ssh s2.jonathanpastor.fr 'supervisorctl start api'
-
-pages:
-  stage: deploy
-  script:
-  - apt update
-  - apt install -y rsync
-
-  - mkdir -p public
-  - rsync -avz --progress /builds/homelab-group/wikipulse_angular/dist/wiki-pulse-angular/ public/
-  - ls -lha public/
-
+    - IMAGE_TAG="$CI_COMMIT_SHORT_SHA" sh deploy/portainer-deploy.sh spiral deploy/spiral/docker-compose.yml
   environment:
-    name: docs
-    # Ask gitlab pages to deploy the public folder in specific URL that contains the branch name
-    url: https://badock.gitlab.io/homelab-group/wikipulse_angular
-  artifacts:
-    paths:
-    - public
-    expire_in: 1 week
+    name: production
+    url: https://spiral.apps.jonathanpastor.fr
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

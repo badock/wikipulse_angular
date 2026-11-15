@@ -1,0 +1,16 @@
+# Portainer stack "spiral". Created/updated by GitLab CI (deploy/portainer-deploy.sh).
+services:
+  spiral:
+    image: registry.gitlab.com/homelab-group/wikipulse_angular:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.spiral.rule=Host(`spiral.apps.jonathanpastor.fr`)
+      - traefik.http.routers.spiral.entrypoints=web
+      - traefik.http.services.spiral.loadbalancer.server.port=80
+
+networks:
+  traefik:
+    external: true

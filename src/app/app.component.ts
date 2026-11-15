@@ -60,6 +60,7 @@ export class AppComponent implements OnInit {
         const firstMatch: string = value[1][0];
 
         if (firstMatch === '' || firstMatch === undefined) {
+          this.isLoading = false;
           return;
         }
 
@@ -75,8 +76,8 @@ export class AppComponent implements OnInit {
           this.statisticsData = statisticsValue;
           this.isLoading = false;
           this.refreshHeatMap();
-        });
-      });
+        }, () => this.isLoading = false);
+      }, () => this.isLoading = false);
     }, 500);
   }
 

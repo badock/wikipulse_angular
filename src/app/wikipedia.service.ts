@@ -15,12 +15,11 @@ export class WikipediaService {
   }
 
   getStatisticsKeywords(matchingKeywords: string): Observable<any> {
-    let dateObj = new Date();
-    let yearStr = `${dateObj.getUTCFullYear()}`;
-    let monthStr = (dateObj.getUTCMonth() + 1) < 10 ? `0${dateObj.getUTCMonth() + 1}`: `${dateObj.getUTCMonth() + 1}`
-    let dayStr = dateObj.getUTCDate() < 10 ? `0${dateObj.getUTCDate()}`: `${dateObj.getUTCDate()}`
-    let todayAsStr = `${yearStr}${monthStr}${dayStr}00`;  
-    const url = `https://api.spiral.jonathanpastor.fr/pages/views/${matchingKeywords}/2016122700/${todayAsStr}`;
+    // The Wikimedia REST API allows CORS, so the browser calls it directly (no proxy needed).
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const article = encodeURIComponent(matchingKeywords.replace(/ /g, '_'));
+    const url = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/fr.wikipedia/all-access/user/${article}/daily/20161227/${today}`;
+    // No custom header (e.g. Api-User-Agent): it would trigger a CORS preflight, which Wikimedia rejects (405).
     return this.http.get(url);
   }
 
